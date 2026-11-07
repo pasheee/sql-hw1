@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS public."Помещение / E1"
 (
     id serial,
     name character varying(32) NOT NULL,
-    volume double precision NOT NULL,
+    volume double precision NOT NULL CHECK (volume > 0),
     temperature double precision NOT NULL,
-    humidity double precision NOT NULL,
+    humidity double precision NOT NULL CHECK (humidity BETWEEN 0 AND 100),
     PRIMARY KEY (id)
 );
 
@@ -16,12 +16,12 @@ CREATE TABLE IF NOT EXISTS public."Стеллаж / E2"
     id serial,
     storage_id integer NOT NULL,
     client_id integer,
-    "number" integer NOT NULL,
-    space integer NOT NULL,
-    height double precision,
-    width double precision,
-    length double precision,
-    max_load double precision,
+    "number" integer NOT NULL CHECK ("number" > 0),
+    space integer NOT NULL CHECK (space > 0),
+    height double precision NOT NULL CHECK (height > 0),
+    width double precision NOT NULL CHECK (width > 0),
+    length double precision NOT NULL CHECK (length > 0),
+    max_load double precision NOT NULL CHECK (max_load > 0),
     PRIMARY KEY (id),
     UNIQUE (id, client_id)
 );
@@ -39,17 +39,18 @@ CREATE TABLE IF NOT EXISTS public."Товар / E4"
     id serial,
     client_id integer NOT NULL,
     shelf_id integer NOT NULL,
-    shelf_position integer NOT NULL,
-    height double precision,
-    width double precision,
-    length double precision,
-    weight double precision,
-    receive_date date,
-    contract_number integer NOT NULL,
-    contract_end_date date,
-    temperature double precision,
-    humidity double precision,
-    PRIMARY KEY (id)
+    shelf_position integer NOT NULL CHECK (shelf_position > 0),
+    height double precision NOT NULL CHECK (height > 0),
+    width double precision NOT NULL CHECK (width > 0),
+    length double precision NOT NULL CHECK (length > 0),
+    weight double precision NOT NULL CHECK (weight > 0),
+    receive_date date NOT NULL,
+    contract_number integer NOT NULL CHECK (contract_number > 0),
+    contract_end_date date NOT NULL,
+    temperature double precision NOT NULL,
+    humidity double precision NOT NULL CHECK (humidity BETWEEN 0 AND 100),
+    PRIMARY KEY (id),
+    CHECK (contract_end_date >= receive_date)
 );
 
 ALTER TABLE IF EXISTS public."Стеллаж / E2"
